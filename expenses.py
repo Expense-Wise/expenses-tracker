@@ -1,5 +1,6 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///expenses.db'
@@ -15,15 +16,34 @@ class User(db.Model):
 
 class Expense(db.Model):
     id = db.Column(db.Integer, index=True, primary_key=True)
-    Amount = db.Column(db.Integer, index=True)
-    Description = db.Column(db.String, index=True)
-    Category = db.Column(db.String, index=True)
-    UserId = db.Column(db.Integer, db.ForeignKey('user.id'))
+    amount = db.Column(db.Integer, index=True)
+    description = db.Column(db.String, index=True)
+    category = db.Column(db.String, index=True)
+    userId = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+
+with app.app_context():
+    db.create_all()
 
 
 @app.route("/")
 def home():
     return render_template('home.html')
+
+
+@app.route("/expenses/<int:user_id>", methods=["GET"])
+def get_expenses(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        return "User not found", 404
+
+    expenses = Expense.query.filter_by(userId=user.id).all()
+    return jsonify([{
+        'id': expense.id,
+        'amount': expense.amount,
+        'description': expense.description,
+        'category': expense.category
+    } for expense in expenses])
 
 
 if __name__ == '__main__':
