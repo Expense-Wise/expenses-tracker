@@ -25,6 +25,10 @@ class Expense(db.Model):
     userId = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 
+with app.app_context():
+    db.create_all()
+
+
 @app.route("/")
 def home():
     return render_template('home.html')
