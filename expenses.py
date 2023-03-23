@@ -1,7 +1,6 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
-from flask import jsonify
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///expenses.db'
@@ -32,6 +31,21 @@ with app.app_context():
 @app.route("/")
 def home():
     return render_template('home.html')
+
+
+@app.route("/expenses/<int:user_id>", methods=["GET"])
+def get_expenses(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        return "User not found", 404
+
+    expenses = Expense.query.filter_by(userId=user.id).all()
+    return jsonify([{
+        'id': expense.id,
+        'amount': expense.amount,
+        'description': expense.description,
+        'category': expense.category
+    } for expense in expenses])
 
 
 if __name__ == '__main__':
