@@ -15,10 +15,10 @@ class User(db.Model):
 
 class Expense(db.Model):
     id = db.Column(db.Integer, index=True, primary_key=True)
-    Amount = db.Column(db.Integer, index=True)
-    Description = db.Column(db.String, index=True)
-    Category = db.Column(db.String, index=True)
-    UserId = db.Column(db.Integer, db.ForeignKey('user.id'))
+    amount = db.Column(db.Integer, index=True)
+    description = db.Column(db.String, index=True)
+    category = db.Column(db.String, index=True)
+    userId = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 
 @app.route("/")
