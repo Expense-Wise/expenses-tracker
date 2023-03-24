@@ -50,18 +50,18 @@ def home(user_id):
     expenses = Expense.query.filter_by(userId=user_id).all()
     return render_template("home.html", expenses=expenses, userId=user_id)
 
-@app.route("/add", methods=["GET", "POST"])
-def add_expense():
+
+@app.route("/add<int:user_id>", methods=["GET", "POST"])
+def add_expense(user_id):
     form = RegistrationForm()
     if form.validate_on_submit():
-        user_id = user.id
         expense = Expense(amount=form.amount.data, description=form.description.data,
-                          category=form.category.data, user_id=user_id)
+                          category=form.category.data, userId=user_id)
         db.session.add(expense)
         db.session.commit()
         flash(f"Expense added", "success")
-        return redirect(url_for("home"))
-    return render_template("add_expense.html", title="Add Expense", form=form)
+        return redirect(url_for("home", user_id=user_id))
+    return render_template("add_expense.html", title="Add Expense", form=form, userId=user_id)
 
 
 @app.route("/update", methods=["GET", "PUT", "DELETE", "POST"])

@@ -24,7 +24,7 @@
           <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
               <a class="nav-item nav-link" href="{{ url_for("home", user_id=userId) }}">View</a>
-              <a class="nav-item nav-link" href="{{ url_for("add_expense")}}">Add</a>
+              <a class="nav-item nav-link" href="{{ url_for("add_expense", user_id=userId)}}">Add</a>
               <a class="nav-item nav-link" href="{{ url_for("update")}}">Update/Delete</a>
               
             </div>
