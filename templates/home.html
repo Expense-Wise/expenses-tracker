@@ -1,4 +1,15 @@
-{% extends "layout.html" %}
+{% extends 'layout.html' %}
 {% block content %}
-        <h1>Home page</h1>
+{% for expense in expenses %}
+    <article class="media content-section">
+        <div class="media-body">
+            <div class="article-metadata">
+            <a class="mr-2" href="#">{{ expense.id }}</a>
+            <small class="text-muted1">{{ '{:.2f}'.format(expense.amount) }} GBP</small>
+            </div>
+            <h2><a class="article-title" href="#">{{ expense.description }}</a></h2>
+            <p class="article-content">{{ expense.category }}</p>
+        </div>
+</article>
+{% endfor %}
 {% endblock content %}
