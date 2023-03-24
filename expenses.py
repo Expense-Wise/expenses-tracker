@@ -26,13 +26,8 @@ with app.app_context():
     db.create_all()
 
 
-@app.route("/")
-def home():
-    return render_template('home.html')
-
-
-@app.route("/expenses/<int:user_id>", methods=["GET"])
-def get_expenses(user_id):
+@app.route("/<int:user_id>", methods=["GET"])
+def home(user_id):
     user = User.query.filter_by(id=user_id).first()
     if user is None:
         return "User not found", 404
