@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, url_for, flash, redirect
+from flask import Flask, render_template, request, url_for, flash, redirect
 # from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from forms import RegistrationForm, LoginForm, UpdateForm
@@ -62,7 +62,7 @@ def add_expense(user_id):
     return render_template("add_expense.html", title="Add Expense", form=form, user_id=user_id)
 
 
-@app.route("/update/<int:expense_id>", methods=["GET", "PUT", "DELETE", "POST"])
+@app.route("/update/<int:expense_id>", methods=["GET", "POST"])
 def update(expense_id):
     expense = Expense.query.get_or_404(expense_id)
     form = UpdateForm()
@@ -74,6 +74,10 @@ def update(expense_id):
         db.session.commit()
         flash(f"Expense updated", "success")
         return redirect(url_for("home", user_id=user_id))
+    elif request.method == "GET":
+        form.amount.data = expense.amount
+        form.description.data = expense.description
+        form.category.data = expense.category
     return render_template("update.html", form=form, title="Update", expense_id=expense_id, user_id=user_id)
 
 

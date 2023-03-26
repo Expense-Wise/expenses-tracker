@@ -14,8 +14,6 @@ class RegistrationForm(FlaskForm):
 
 
 class UpdateForm(FlaskForm):
-    expenseID = IntegerField(
-        "Expense ID", [validators.DataRequired(message="Please enter an expense ID")])
     amount = FloatField(
         "Amount", [validators.DataRequired(message="Please enter an amount")])
     description = StringField(
