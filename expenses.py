@@ -13,8 +13,6 @@ db = SQLAlchemy(app)
 # login_manager.init_app(app)
 
 
-
-
 class User(db.Model):
     id = db.Column(db.Integer, index=True, primary_key=True)
     email = db.Column(db.String(120), index=True, unique=True)
@@ -31,8 +29,8 @@ class Expense(db.Model):
 
 with app.app_context():
     db.create_all()
- 
- 
+
+
 # @app.route("/")
 # @app.route("/home")
 # def home():
@@ -48,7 +46,7 @@ def home(user_id):
         return "User not found", 404
 
     expenses = Expense.query.filter_by(userId=user_id).all()
-    return render_template("home.html", expenses=expenses, userId=user_id)
+    return render_template("home.html", expenses=expenses, user_id=user_id)
 
 
 @app.route("/add<int:user_id>", methods=["GET", "POST"])
@@ -61,21 +59,22 @@ def add_expense(user_id):
         db.session.commit()
         flash(f"Expense added", "success")
         return redirect(url_for("home", user_id=user_id))
-    return render_template("add_expense.html", title="Add Expense", form=form, userId=user_id)
+    return render_template("add_expense.html", title="Add Expense", form=form, user_id=user_id)
 
 
-@app.route("/update", methods=["GET", "PUT", "DELETE", "POST"])
-def update():
+@app.route("/update/<int:expense_id>", methods=["GET", "PUT", "DELETE", "POST"])
+def update(expense_id):
+    expense = Expense.query.get_or_404(expense_id)
     form = UpdateForm()
+    user_id = expense.userId
     if form.validate_on_submit():
-        expense = Expense.query.get(form.id.data)
         expense.amount = form.amount.data
         expense.description = form.description.data
         expense.category = form.category.data
         db.session.commit()
         flash(f"Expense updated", "success")
-        return redirect(url_for("home"))
-    return render_template("update.html", title="Update", form=form)
+        return redirect(url_for("home", user_id=user_id))
+    return render_template("update.html", form=form, title="Update", expense_id=expense_id, user_id=user_id)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -87,7 +86,7 @@ def login():
             return redirect(url_for("home"))
         else:
             flash("Login unsuccessful. Please check username and password", "danger")
-    return render_template("login.html", title="Log In", form=form)
+    return render_template("login.html", title="Log In", form=form, user_id=1)
 
 
 if __name__ == '__main__':

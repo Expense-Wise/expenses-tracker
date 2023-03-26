@@ -17,16 +17,14 @@
     <header class="site-header">
     <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
         <div class="container">
-          <a class="navbar-brand mr-4" href="/">Expenses</a>
+          <a class="navbar-brand mr-4" href="{{ url_for("home", user_id=user_id) }}">Expenses</a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
-              <a class="nav-item nav-link" href="{{ url_for("home", user_id=userId) }}">View</a>
-              <a class="nav-item nav-link" href="{{ url_for("add_expense", user_id=userId)}}">Add</a>
-              <a class="nav-item nav-link" href="{{ url_for("update")}}">Update/Delete</a>
-              
+              <a class="nav-item nav-link" href="{{ url_for("home", user_id=user_id) }}">View</a>
+              <a class="nav-item nav-link" href="{{ url_for("add_expense", user_id=user_id)}}">Add</a>
             </div>
             <!-- Navbar Right Side -->
             <div class="navbar-nav">
