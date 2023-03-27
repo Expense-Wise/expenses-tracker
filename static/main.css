@@ -34,14 +34,19 @@ h6 {
     padding: 10px 20px;
     border: 1px solid #dddddd;
     border-radius: 3px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
-/* this is the description */
+/* this is the category*/ 
 .article-title {
-    color: #444444;
-    font-size: 20px;
+    font-size: 18px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
+    border: 1px solid #dddddd;
+    border-radius: 3px;
+    padding: 10px 20px;
+    margin-bottom: 10px;
+    background-color: #eef0f1;
+    width: 100%;
 }
 
 a.article-title:hover {
@@ -49,10 +54,15 @@ a.article-title:hover {
     text-decoration: none;
 }
 
-/* this is the category */
-.article-content {
+/* this is the description */
+.article-description .sub-title {
     white-space: pre-line;
-    font-size: 20px;
+    font-size: 18px;
+    border: 1px solid #dddddd;
+    border-radius: 3px;
+    padding: 10px 20px;
+    margin-bottom: 5px;
+    background-color: #eef0f1;
 
 }
 
@@ -96,9 +106,24 @@ a.article-title:hover {
 .text-muted1 {
     font-size: 20px;
     font-weight: bold;
+    color: #428bca;
 }
 
-.article-content-2 {
+.sub-title {
+    border: 1px solid #dddddd;
+    border-radius: 3px;
+    padding: 10px 20px;
+    margin-bottom: 5px;
+    background-color: #d6dee4;
+
+}
+.paid-unpaid-paid {
+    font-size: 15px;
     font-weight: bold;
-    color: #428bca;
+    background-color: #d4edda !important;
+}
+.paid-unpaid-unpaid {
+    font-size: 15px;
+    font-weight: bold;
+    background-color: #f8d7da !important;
 }
