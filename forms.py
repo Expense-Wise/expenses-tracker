@@ -2,8 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, EmailField, validators, FloatField, IntegerField
 
 
-class RegistrationForm(FlaskForm):
-    # username = StringField("Username", [validators.Length(min=5, max=20)])
+class AddForm(FlaskForm):
     amount = FloatField(
         "Amount", [validators.DataRequired(message="Please enter an amount")])
     description = StringField(
