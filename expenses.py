@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, url_for, flash, redirect
 # from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from forms import AddForm, LoginForm, UpdateForm
+# from calcs import allexpense
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "c4f86fdd81408bf0607e35b661f845a8"
@@ -12,6 +13,17 @@ db = SQLAlchemy(app)
 # login_manager=LoginManager()
 # login_manager.init_app(app)
 
+
+def allexpense(user_id):
+    # user = User.query.filter_by(id=user_id).first()
+    expenses = Expense.query.filter_by(userId=user_id).all()
+    totalexpense = 0
+    # loop through expenses and add amount to totalexpense
+    for expense in expenses:
+        totalexpense += expense.amount
+    return totalexpense
+
+   
 
 class User(db.Model):
     id = db.Column(db.Integer, index=True, primary_key=True)
@@ -41,7 +53,7 @@ def login():
             return redirect(url_for("home"))
         else:
             flash("Login unsuccessful. Please check username and password", "danger")
-    return render_template("login.html", title="Log In", form=form, user_id=1)
+    return render_template("login.html", title="Log In", form=form, user_id=1, totalexpense=allexpense(1))
 
 
 @app.route("/<int:user_id>", methods=["GET"])
@@ -51,7 +63,7 @@ def home(user_id):
         return "User not found", 404
 
     expenses = Expense.query.filter_by(userId=user_id).all()
-    return render_template("home.html", expenses=expenses, user_id=user_id)
+    return render_template("home.html", expenses=expenses, user_id=user_id, totalexpense=allexpense(user_id))
 
 
 @app.route("/<int:user_id>/add", methods=["GET", "POST"])
@@ -64,7 +76,7 @@ def add_expense(user_id):
         db.session.commit()
         flash(f"Expense added", "success")
         return redirect(url_for("home", user_id=user_id))
-    return render_template("add_expense.html", title="Add Expense", form=form, user_id=user_id)
+    return render_template("add_expense.html", title="Add Expense", form=form, user_id=user_id, totalexpense=allexpense(user_id))
 
 
 @app.route("/<int:user_id>/<int:expense_id>/update", methods=["GET", "POST"])
@@ -77,13 +89,13 @@ def update(user_id, expense_id):
         expense.category = form.category.data
         db.session.commit()
         flash(f"Expense updated", "success")
-        return redirect(url_for("home", user_id=user_id))
+        return redirect(url_for("home", user_id=user_id, totalexpense=allexpense(user_id)))
     elif request.method == "GET":
         form.amount.data = expense.amount
         form.description.data = expense.description
         form.category.data = expense.category
         form.repaid.data = expense.repaid
-    return render_template("update.html", form=form, title="Update", expense_id=expense_id, user_id=user_id)
+    return render_template("update.html", form=form, title="Update", expense_id=expense_id, user_id=user_id, totalexpense=allexpense(user_id))
 
 
 @app.route("/<int:user_id>/<int:expense_id>/delete", methods=['POST'])
@@ -92,7 +104,7 @@ def delete(user_id, expense_id):
     db.session.delete(expense)
     db.session.commit()
     flash('Your expense has been deleted!', 'success')
-    return redirect(url_for('home', user_id=user_id, expense_id=expense_id))
+    return redirect(url_for('home', user_id=user_id, expense_id=expense_id, totalexpense=allexpense(user_id)))
 
 
 if __name__ == '__main__':
