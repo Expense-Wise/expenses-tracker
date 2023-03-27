@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, url_for, flash, redirect
 # from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from forms import AddForm, LoginForm, UpdateForm
-# from calcs import allexpense
+import plotly.graph_objects as go
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "c4f86fdd81408bf0607e35b661f845a8"
@@ -22,6 +22,7 @@ def allexpense(user_id):
         totalexpense += expense.amount
     return totalexpense
 
+
 def totalPaid(user_id):
     expenses = Expense.query.filter_by(userId=user_id).all()
     totalpaid = 0
@@ -30,6 +31,7 @@ def totalPaid(user_id):
         if expense.repaid == "Paid":
             totalpaid += expense.amount
     return totalpaid
+
 
 def totalUnpaid(user_id):
     expenses = Expense.query.filter_by(userId=user_id).all()
@@ -40,7 +42,6 @@ def totalUnpaid(user_id):
             totalunpaid += expense.amount
     return totalunpaid
 
-   
 
 class User(db.Model):
     id = db.Column(db.Integer, index=True, primary_key=True)
@@ -70,7 +71,7 @@ def login():
             return redirect(url_for("home"))
         else:
             flash("Login unsuccessful. Please check username and password", "danger")
-    return render_template("login.html", title="Log In", form=form, user_id=1, totalexpense=allexpense(1), 
+    return render_template("login.html", title="Log In", form=form, user_id=1, totalexpense=allexpense(1),
                            totalPaid=totalPaid(1), totalUnpaid=totalUnpaid(1))
 
 
@@ -81,7 +82,7 @@ def home(user_id):
         return "User not found", 404
 
     expenses = Expense.query.filter_by(userId=user_id).all()
-    return render_template("home.html", expenses=expenses, user_id=user_id, 
+    return render_template("home.html", expenses=expenses, user_id=user_id,
                            totalexpense=allexpense(user_id), totalPaid=totalPaid(user_id), totalUnpaid=totalUnpaid(user_id))
 
 
@@ -95,7 +96,7 @@ def add_expense(user_id):
         db.session.commit()
         flash(f"Expense added", "success")
         return redirect(url_for("home", user_id=user_id, totalexpense=allexpense(user_id), totalPaid=totalPaid(user_id), totalUnpaid=totalUnpaid(user_id)))
-    return render_template("add_expense.html", title="Add Expense", form=form, user_id=user_id, 
+    return render_template("add_expense.html", title="Add Expense", form=form, user_id=user_id,
                            totalexpense=allexpense(user_id), totalPaid=totalPaid(user_id), totalUnpaid=totalUnpaid(user_id))
 
 
@@ -109,14 +110,14 @@ def update(user_id, expense_id):
         expense.category = form.category.data
         db.session.commit()
         flash(f"Expense updated", "success")
-        return redirect(url_for("home", user_id=user_id, totalexpense=allexpense(user_id), 
+        return redirect(url_for("home", user_id=user_id, totalexpense=allexpense(user_id),
                                 totalPaid=totalPaid(user_id), totalUnpaid=totalUnpaid(user_id)))
     elif request.method == "GET":
         form.amount.data = expense.amount
         form.description.data = expense.description
         form.category.data = expense.category
         form.repaid.data = expense.repaid
-    return render_template("update.html", form=form, title="Update", expense_id=expense_id, user_id=user_id, 
+    return render_template("update.html", form=form, title="Update", expense_id=expense_id, user_id=user_id,
                            totalexpense=allexpense(user_id), totalPaid=totalPaid(user_id), totalUnpaid=totalUnpaid(user_id))
 
 
@@ -126,8 +127,27 @@ def delete(user_id, expense_id):
     db.session.delete(expense)
     db.session.commit()
     flash('Your expense has been deleted!', 'success')
-    return redirect(url_for('home', user_id=user_id, expense_id=expense_id, totalexpense=allexpense(user_id), 
+    return redirect(url_for('home', user_id=user_id, expense_id=expense_id, totalexpense=allexpense(user_id),
                             totalPaid=totalPaid(user_id), totalUnpaid=totalUnpaid(user_id)))
+
+
+@app.route("/<int:user_id>/view", methods=['GET'])
+def view(user_id):
+    expenses = Expense.query.filter_by(userId=user_id).all()
+    # labels= category
+    # values = amount
+    # add expense of a category
+    labels = []
+
+    for expense in expenses:
+        if expense.category not in labels:
+            labels.append(expense.category)
+            total[category] = 0
+        total[category] += expense.amount
+    fig = go.Figure(data=[go.Pie(labels=labels, values=list(total[category]))])
+    chart = fig.show()
+    return render_template(url_for('view', user_id=user_id, totalexpense=allexpense(user_id),
+                                   totalPaid=totalPaid(user_id), totalUnpaid=totalUnpaid(user_id), chart=chart))
 
 
 if __name__ == '__main__':
