@@ -137,10 +137,9 @@ def view(user_id):
     # labels= category
     # values = amount
     # add expense of a category
-    labels = []
 
     for expense in expenses:
-        if expense.category not in labels:
+        if expense.category not in total:
             labels.append(expense.category)
             total[category] = 0
         total[category] += expense.amount
