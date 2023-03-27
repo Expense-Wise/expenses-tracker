@@ -48,6 +48,25 @@
           {% endwith%} 
           {% block content %}{% endblock %}
         </div>
+        <div class="col-md-4">
+          <div class="content-section">
+            <h3>More Info</h3>
+            <p class='text-muted'>Click expense ID to update.
+                <ul class="list-group">
+                    <li class="list-group-item list-group-item-light">Total Expenses 
+                     £{{ '{:.2f}'.format(totalexpense) }}
+
+                    </li>
+                    <li class="list-group-item list-group-item-light">Total Paid
+                      £{{ '{:.2f}'.format(totalPaid) }}
+                    </li>
+                    <li class="list-group-item list-group-item-light">Total Unpaid
+                      £{{ '{:.2f}'.format(totalUnpaid) }}
+                    </li>
+                </ul>
+            </p>
+          </div>
+        </div>
       </div>
     </main>   
     <!-- Optional JavaScript -->
