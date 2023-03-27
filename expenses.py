@@ -81,6 +81,16 @@ def update(expense_id):
     return render_template("update.html", form=form, title="Update", expense_id=expense_id, user_id=user_id)
 
 
+@app.route("/delete/<int:expense_id>", methods=['POST'])
+def delete(expense_id):
+    expense = Expense.query.get_or_404(expense_id)
+    user_id = expense.userId
+    db.session.delete(expense)
+    db.session.commit()
+    flash('Your expense has been deleted!', 'success')
+    return redirect(url_for('home', user_id=user_id, expense_id=expense_id))
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()
