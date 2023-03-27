@@ -19,6 +19,7 @@ class UpdateForm(FlaskForm):
         "Description", [validators.DataRequired(message="Please enter a description")])
     category = StringField("Category", [validators.DataRequired(
         message="Please enter a category")])
+    repaid = StringField("Repaid", render_kw={'readonly': True})
     submit = SubmitField("Submit")
 
 

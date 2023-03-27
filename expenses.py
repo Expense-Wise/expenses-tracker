@@ -24,6 +24,7 @@ class Expense(db.Model):
     amount = db.Column(db.Integer, index=True)
     description = db.Column(db.String, index=True)
     category = db.Column(db.String, index=True)
+    repaid = db.Column(db.String, index=True)
     userId = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 
@@ -81,6 +82,7 @@ def update(user_id, expense_id):
         form.amount.data = expense.amount
         form.description.data = expense.description
         form.category.data = expense.category
+        form.repaid.data = expense.repaid
     return render_template("update.html", form=form, title="Update", expense_id=expense_id, user_id=user_id)
 
 
