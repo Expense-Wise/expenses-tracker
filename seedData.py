@@ -8,37 +8,43 @@ with app.app_context():
             "userId": 1,
             "amount": 50.0,
             "description": "Concert ticket",
-            "category": "Entertainment"
+            "category": "Entertainment",
+            "repaid": "Paid"
         },
         {
             "userId": 1,
             "amount": 20.0,
             "description": "Dinner",
-            "category": "Food"
+            "category": "Food",
+            "repaid": "Paid"
         },
         {
             "userId": 1,
             "amount": 200.0,
             "description": "Hotel",
-            "category": "Travel"
+            "category": "Travel",
+            "repaid": "Unpaid"
         },
         {
             "userId": 2,
             "amount": 10.5,
             "description": "Coffee",
-            "category": "Food"
+            "category": "Food",
+            "repaid": "Paid"
         },
         {
             "userId": 2,
             "amount": 25.0,
             "description": "Movie ticket",
-            "category": "Entertainment"
+            "category": "Entertainment",
+            "repaid": "Unpaid"
         },
         {
             "userId": 2,
             "amount": 100.0,
             "description": "Gas",
-            "category": "Travel"
+            "category": "Travel",
+            "repaid": "Unpaid"
         }
     ]
     # Define the data to be inserted into the User table
