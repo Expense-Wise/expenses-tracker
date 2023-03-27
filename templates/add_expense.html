@@ -1,0 +1,35 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <div class="content-section">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Add Expense</legend>
+                <div class="form=group">
+                    {{ form.amount.label(class="form-control-label", text="Amount") }}
+                    {{ form.amount(class="form-control form-control-lg") }}
+                    {% for error in form.amount.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                <div class="form=group">
+                    {{ form.description.label(class="form-control-label", text="Description") }}
+                    {{ form.description(class="form-control form-control-lg") }}
+                    {% for error in form.description.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                <div class="form=group">
+                    {{ form.category.label(class="form-control-label", text="Category") }}
+                    {{ form.category(class="form-control form-control-lg") }}
+                    {% for error in form.category.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            </fieldset>
+            <div class="form=group">
+                    {{ form.submit(class="btn btn-outline-info") }}
+                </div>
+        </form>
+    </div>
+{% endblock content %}

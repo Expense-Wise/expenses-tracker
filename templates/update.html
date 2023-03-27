@@ -1,0 +1,57 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <div class="content-section">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Update Expense</legend>
+                <div class="form=group">
+                    {{ form.amount.label(class="form-control-label", text="Amount") }}
+                    {{ form.amount(class="form-control form-control-lg") }}
+                    {% for error in form.amount.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                <div class="form=group">
+                    {{ form.description.label(class="form-control-label", text="Description") }}
+                    {{ form.description(class="form-control form-control-lg") }}
+                    {% for error in form.description.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                <div class="form=group">
+                    {{ form.category.label(class="form-control-label", text="Category") }}
+                    {{ form.category(class="form-control form-control-lg") }}
+                    {% for error in form.category.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            </fieldset>
+            <div class="form=group">
+                    {{ form.submit(class="btn btn-outline-info") }}
+                    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
+                </div>
+        </form>
+    </div>
+    <!-- Modal -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Delete Expense?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <form action="{{ url_for('delete', user_id=user_id, expense_id=expense_id) }}" method="POST">
+            <input class="btn btn-danger" type="submit" value="Delete">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+
