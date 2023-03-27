@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, url_for, flash, redirect
 # from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
-from forms import RegistrationForm, LoginForm, UpdateForm
+from forms import AddForm, LoginForm, UpdateForm
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "c4f86fdd81408bf0607e35b661f845a8"
@@ -31,12 +31,16 @@ with app.app_context():
     db.create_all()
 
 
-# @app.route("/")
-# @app.route("/home")
-# def home():
-#     user = User.query.first()  # Get the first user from the database
-#     expenses = user.expenses.all()  # Get all expenses related to that user
-#     return render_template("home.html", expenses=expenses)
+@app.route("/", methods=["GET", "POST"])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        if form.email.data == "admin@blog.com" and form.password.data == "password":
+            flash("You have been logged in!", "success")
+            return redirect(url_for("home"))
+        else:
+            flash("Login unsuccessful. Please check username and password", "danger")
+    return render_template("login.html", title="Log In", form=form, user_id=1)
 
 
 @app.route("/<int:user_id>", methods=["GET"])
@@ -49,9 +53,9 @@ def home(user_id):
     return render_template("home.html", expenses=expenses, user_id=user_id)
 
 
-@app.route("/add<int:user_id>", methods=["GET", "POST"])
+@app.route("/<int:user_id>/add", methods=["GET", "POST"])
 def add_expense(user_id):
-    form = RegistrationForm()
+    form = AddForm()
     if form.validate_on_submit():
         expense = Expense(amount=form.amount.data, description=form.description.data,
                           category=form.category.data, userId=user_id)
@@ -62,11 +66,10 @@ def add_expense(user_id):
     return render_template("add_expense.html", title="Add Expense", form=form, user_id=user_id)
 
 
-@app.route("/update/<int:expense_id>", methods=["GET", "POST"])
-def update(expense_id):
+@app.route("/<int:user_id>/<int:expense_id>/update", methods=["GET", "POST"])
+def update(user_id, expense_id):
     expense = Expense.query.get_or_404(expense_id)
     form = UpdateForm()
-    user_id = expense.userId
     if form.validate_on_submit():
         expense.amount = form.amount.data
         expense.description = form.description.data
@@ -81,26 +84,13 @@ def update(expense_id):
     return render_template("update.html", form=form, title="Update", expense_id=expense_id, user_id=user_id)
 
 
-@app.route("/delete/<int:expense_id>", methods=['POST'])
-def delete(expense_id):
+@app.route("/<int:user_id>/<int:expense_id>/delete", methods=['POST'])
+def delete(user_id, expense_id):
     expense = Expense.query.get_or_404(expense_id)
-    user_id = expense.userId
     db.session.delete(expense)
     db.session.commit()
     flash('Your expense has been deleted!', 'success')
     return redirect(url_for('home', user_id=user_id, expense_id=expense_id))
-
-
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        if form.email.data == "admin@blog.com" and form.password.data == "password":
-            flash("You have been logged in!", "success")
-            return redirect(url_for("home"))
-        else:
-            flash("Login unsuccessful. Please check username and password", "danger")
-    return render_template("login.html", title="Log In", form=form, user_id=1)
 
 
 if __name__ == '__main__':
