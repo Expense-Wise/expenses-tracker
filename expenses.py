@@ -142,7 +142,7 @@ def view(user_id):
     # add category if not in
     # add the amount to the dictionary
 
-    fig = go.Figure(data=[go.Pie(labels=labels, values=list(total[category]))])
+    fig = go.Figure(data=[go.Pie(labels=key, values=value)])
     chart = fig.show()
     return render_template(url_for('view', user_id=user_id, totalexpense=allexpense(user_id),
                                    totalPaid=totalPaid(user_id), totalUnpaid=totalUnpaid(user_id), chart=chart))
