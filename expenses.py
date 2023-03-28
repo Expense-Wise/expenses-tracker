@@ -134,16 +134,17 @@ def delete(user_id, expense_id):
 @app.route("/<int:user_id>/view", methods=['GET'])
 def view(user_id):
     expenses = Expense.query.filter_by(userId=user_id).all()
-    # labels= category [key]
-    # values = amount [value]
-    # add expense of a category
-    # define the dictionary
-    # loop
-    # add category if not in
-    # add the amount to the dictionary
+    total = {}
+    for expense in expenses:
+        category = expense.category
+        if category not in total:
+            total[category] = 0
+        total[category] += expense.amount
+    fig = go.Figure(
+        data=[go.Pie(labels=list(total.keys()), values=list(total.values()), textinfo='label+percent',
+                     insidetextorientation='radial',  hole=.3, title='Expenses by Category')])
+    chart = fig.to_html(full_html=False)
 
-    fig = go.Figure(data=[go.Pie(labels=key, values=value)])
-    chart = fig.show()
     return render_template(url_for('view', user_id=user_id, totalexpense=allexpense(user_id),
                                    totalPaid=totalPaid(user_id), totalUnpaid=totalUnpaid(user_id), chart=chart))
 
