@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, url_for, flash, redirect
-# from flask_login import LoginManager
+from flask_login import LoginManager, login_user, logout_user, login_manager
 from flask_sqlalchemy import SQLAlchemy
 from forms import AddForm, LoginForm, UpdateForm
 import plotly.graph_objects as go
@@ -11,7 +11,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///expenses.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
-# login_manager=LoginManager()
+login_manager=LoginManager(app)
 # login_manager.init_app(app)
 
 
@@ -44,10 +44,27 @@ def totalUnpaid(user_id):
     return totalunpaid
 
 
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
 class User(db.Model):
     id = db.Column(db.Integer, index=True, primary_key=True)
     email = db.Column(db.String(120), index=True, unique=True)
+    password = db.Column(db.String(60), index=True)
     expenses = db.relationship('Expense', backref='user', lazy='dynamic')
+    
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return str(self.id)
 
 
 class Expense(db.Model):
@@ -67,13 +84,21 @@ with app.app_context():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        if form.email.data == "admin@blog.com" and form.password.data == "password":
-            flash("You have been logged in!", "success")
-            return redirect(url_for("home"))
+        user = User.query.filter_by(email=form.email.data).first()
+        password = User.query.filter_by(password=form.password.data).first()
+        if user and password:
+            login_user(user)
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for("home", user_id=user.id))
         else:
-            flash("Login unsuccessful. Please check username and password", "danger")
-    return render_template("login.html", title="Log In", form=form, user_id=1, totalexpense=allexpense(1),
-                           totalPaid=totalPaid(1), totalUnpaid=totalUnpaid(1))
+            flash("Login unsuccessful. Please check email and password", "danger")
+    return render_template("login.html", title="Log In", form=form)
+    
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for('/'))
 
 
 @app.route("/<int:user_id>", methods=["GET"])

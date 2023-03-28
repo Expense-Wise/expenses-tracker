@@ -49,8 +49,8 @@ with app.app_context():
     ]
     # Define the data to be inserted into the User table
     users = [
-        {"email": "user1@example.com"},
-        {"email": "user2@example.com"},
+        {"email": "user1@example.com", "password": "password1"},
+        {"email": "user2@example.com", "password": "password2"},
     ]
 # Construct the SQL statements for inserting the data into the Expense and User tables
     expense_stmt = insert(Expense.__table__).values(expenses)
