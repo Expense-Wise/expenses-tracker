@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, url_for, flash, redirect
-from flask_login import LoginManager, login_user, logout_user, login_manager
+from flask_login import LoginManager, login_user, logout_user, login_manager, login_required
 from flask_sqlalchemy import SQLAlchemy
 from forms import AddForm, LoginForm, UpdateForm
 import plotly.graph_objects as go
@@ -102,6 +102,7 @@ def logout():
 
 
 @app.route("/<int:user_id>", methods=["GET"])
+@login_required
 def home(user_id):
     user = User.query.filter_by(id=user_id).first()
     if user is None:
@@ -113,6 +114,7 @@ def home(user_id):
 
 
 @app.route("/<int:user_id>/add", methods=["GET", "POST"])
+@login_required
 def add_expense(user_id):
     form = AddForm()
     if form.validate_on_submit():
@@ -127,6 +129,7 @@ def add_expense(user_id):
 
 
 @app.route("/<int:user_id>/<int:expense_id>/update", methods=["GET", "POST"])
+@login_required
 def update(user_id, expense_id):
     expense = Expense.query.get_or_404(expense_id)
     form = UpdateForm()
@@ -148,6 +151,7 @@ def update(user_id, expense_id):
 
 
 @app.route("/<int:user_id>/<int:expense_id>/delete", methods=['POST'])
+@login_required
 def delete(user_id, expense_id):
     expense = Expense.query.get_or_404(expense_id)
     db.session.delete(expense)
@@ -158,6 +162,7 @@ def delete(user_id, expense_id):
 
 
 @app.route("/<int:user_id>/view", methods=['GET'])
+@login_required
 def view(user_id):
     expenses = Expense.query.filter_by(userId=user_id).all()
     total = {}

@@ -4,8 +4,8 @@
     <article class="media content-section">
         <div class="media-body">
             <div class="article-metadata">
-                    <a class="mr-2" href="{{ url_for("update", user_id=user_id, expense_id=expense.id)}}">{{ expense.id }}</a>
-                    <small class="text-muted1">£{{ '{:.2f}'.format(expense.amount) }}</small>
+                    <a class="mr-2"></a>
+                    <a class="text-muted1" href="{{ url_for("update", user_id=user_id, expense_id=expense.id)}}">£{{ '{:.2f}'.format(expense.amount) }}</a>
             </div>
             {% if expense.repaid == "Paid" %}
             <p class="paid-unpaid-paid">{{ expense.repaid }}</p>
