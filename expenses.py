@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from forms import AddForm, LoginForm, UpdateForm
 import plotly.graph_objects as go
 
+
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "c4f86fdd81408bf0607e35b661f845a8"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///expenses.db'
@@ -142,11 +143,11 @@ def view(user_id):
         total[category] += expense.amount
     fig = go.Figure(
         data=[go.Pie(labels=list(total.keys()), values=list(total.values()), textinfo='label+percent',
-                     insidetextorientation='radial',  hole=.3, title='Expenses by Category')])
+              insidetextorientation='radial',  hole=.3)])
     chart = fig.to_html(full_html=False)
 
-    return render_template(url_for('view', user_id=user_id, totalexpense=allexpense(user_id),
-                                   totalPaid=totalPaid(user_id), totalUnpaid=totalUnpaid(user_id), chart=chart))
+    return render_template('view.html', user_id=user_id, chart=chart, expense_id=expense.id, totalexpense=allexpense(user_id),
+                           totalPaid=totalPaid(user_id), totalUnpaid=totalUnpaid(user_id))
 
 
 if __name__ == '__main__':
